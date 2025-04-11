@@ -11,6 +11,7 @@ class ListaTarefasPage extends StatefulWidget {
 }
 
 class _ListaTarefasPageState extends State<ListaTarefasPage> {
+  // Lista de tarefas
   List<Map<String, dynamic>> tarefas = [
     {'titulo': 'Reunião da empresa', 'concluida': false},
     {'titulo': 'Buscar o carro na oficina', 'concluida': false},
@@ -18,8 +19,10 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
     {'titulo': 'Ir para o trabalho', 'concluida': false},
   ];
 
+  // Controlador do campo de nova tarefa
   final TextEditingController _novaTarefaController = TextEditingController();
 
+  // Adiciona uma nova tarefa na lista
   void _adicionarTarefa() {
     String novaTarefa = _novaTarefaController.text.trim();
     if (novaTarefa.isNotEmpty) {
@@ -30,6 +33,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
     }
   }
 
+  // Alterna o estado de conclusão da tarefa
   void _alternarConclusao(int index) {
     setState(() {
       tarefas[index]['concluida'] = !tarefas[index]['concluida'];
@@ -39,11 +43,13 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Menu lateral (Drawer)
       drawer: Drawer(
         backgroundColor: Theme.of(context).colorScheme.surface,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // Cabeçalho do menu
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -56,10 +62,22 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
               ),
             ),
             const SizedBox(height: 20),
-            const ListTile(
-              leading: Icon(Icons.dashboard),
-              title: Text('Dashboard'),
+
+            // BOTÃO DASHBOARD (abre a tela de resumo)
+            ListTile(
+              leading: const Icon(Icons.dashboard),
+              title: const Text('Dashboard'),
+              onTap: () {
+                Navigator.pop(context); // Fecha o Drawer antes de navegar
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResumoTarefasPage(tarefas: tarefas),
+                  ),
+                );
+              },
             ),
+
             const ListTile(
               leading: Icon(Icons.settings),
               title: Text('Configurações'),
@@ -69,6 +87,8 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
               title: Text('Ajuda'),
             ),
             const Divider(),
+
+            // Alternância de modo escuro
             SwitchListTile(
               title: const Text('Modo escuro'),
               secondary: const Icon(Icons.dark_mode),
@@ -80,6 +100,8 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
           ],
         ),
       ),
+
+      // Corpo principal da tela
       body: SafeArea(
         child: Column(
           children: [
@@ -89,6 +111,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Botão para abrir o menu lateral
                   Builder(
                     builder: (context) => IconButton(
                       icon: const Icon(Icons.menu),
@@ -150,11 +173,12 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
             BottomNavigationBar(
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tarefas'),
-                BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Resumo'),
+                BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'DashBoard'),
                 BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Configurações'),
               ],
               currentIndex: 0,
               onTap: (index) {
+                // Quando clicar no item Resumo, abrir a página de resumo
                 if (index == 1) {
                   Navigator.push(
                     context,
